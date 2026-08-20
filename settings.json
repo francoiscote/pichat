@@ -1,5 +1,5 @@
 {
-  "theme": "light/dark",
+  "theme": "github-light-default/rose-pine-moon",
   "defaultProvider": "opencode",
   "defaultModel": "deepseek-v4-flash",
   "defaultThinkingLevel": "high",
@@ -7,5 +7,12 @@
   "showCacheMissNotices": true,
   "warnings": {
     "anthropicExtraUsage": true
-  }
+  },
+  "lastChangelogVersion": "0.84.2",
+  "packages": [
+    "npm:@benvargas/pi-themes",
+    "npm:pi-context-view",
+    "npm:pi-rose-pine",
+    "npm:pi-open-tui"
+  ]
 }
