@@ -11,6 +11,10 @@ open-tui.json
 
 # Project-level state if someone runs pi inside this repo
 .pi/
+state/
+
+# Local dev symlink for extension testing
+node_modules/
 
 # Logs and OS noise
 *.log
