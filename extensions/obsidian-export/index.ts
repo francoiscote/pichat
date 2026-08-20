@@ -1,5 +1,5 @@
 /**
- * Obsidian Conversation Exporter for PiChat
+ * Obsidian Conversation Exporter for PiChat -- ALLO
  *
  * Exports pi sessions as Obsidian Markdown notes named `YYYY-MM-DD - Title.md`
  * into a vault folder, with images copied into an `_assets` subfolder and
@@ -8,8 +8,8 @@
  * Design (see docs/adr/0001, docs/adr/0002 and CONTEXT.md):
  *  - One note per *conversation*, dated at the first message; resumes update
  *    the same note. Same-day collisions get " 2" suffixes.
- *  - Full rewrite only when the session gained new entries AND the user has
- *    not edited the note since the last export.
+ *  - Full rewrite whenever the session gained new entries — the export folder
+ *    is an archive and its notes are never edited by hand.
  *  - Fork/clone sessions render only their post-fork segment (entry ids that
  *    do not exist in the parent session) and open with a [[wikilink]] to the
  *    parent conversation note.
@@ -169,7 +169,6 @@ async function exists(path: string): Promise<boolean> {
 interface SessionRecord {
   lastExportedEntryId: string | null;
   notePath: string;
-  noteMtime: number;
 }
 
 interface ExportState {
@@ -581,7 +580,7 @@ async function resolveParentNoteName(
 
 interface ExportResult {
   wrote: boolean;
-  reason: "wrote" | "no-assistant-turns" | "up-to-date" | "user-edited" | "ephemeral" | "error";
+  reason: "wrote" | "no-assistant-turns" | "up-to-date" | "ephemeral" | "error";
   notePath?: string;
 }
 
@@ -632,11 +631,6 @@ async function exportConversation(
   let notePath: string;
 
   if (rec && (await exists(rec.notePath))) {
-    const mtimeMs = (await stat(rec.notePath)).mtimeMs;
-    if (mtimeMs !== rec.noteMtime) {
-      if (opts.manual) console.log("[obsidian-export] note was edited manually; not overwriting");
-      return { wrote: false, reason: "user-edited" };
-    }
     if (rec.lastExportedEntryId === sessionManager.getLeafId() && !opts.titleOverride) {
       if (opts.manual) console.log("[obsidian-export] already up to date");
       return { wrote: false, reason: "up-to-date" };
@@ -688,7 +682,6 @@ async function exportConversation(
   state.sessions[sessionFile] = {
     lastExportedEntryId: sessionManager.getLeafId(),
     notePath,
-    noteMtime: (await stat(notePath)).mtimeMs,
   };
   await saveState(state);
 
@@ -723,8 +716,6 @@ export default function (pi: ExtensionAPI) {
       if (!ctx.hasUI) return;
       if (result.reason === "wrote" && result.notePath) {
         ctx.ui.notify(`Exported: ${result.notePath}`, "info");
-      } else if (result.reason === "user-edited") {
-        ctx.ui.notify("Note was edited manually — not overwriting", "warning");
       } else if (result.reason === "up-to-date") {
         ctx.ui.notify("Conversation already up to date", "info");
       } else if (result.reason === "no-assistant-turns") {

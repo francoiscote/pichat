@@ -73,8 +73,9 @@ vault as `YYYY-MM-DD - Conversation Title.md` notes.
   duplicated.
 - **Frontmatter** (lean): `title`, `date`, `models`, `tokens` (total),
   `cost_total`.
-- **Safety:** notes are rewritten only when the conversation gained new
-  messages and you haven't edited the note in Obsidian since.
+- **Archive semantics:** the export folder is an archive — notes are
+  rewritten in full whenever the conversation gained new messages, with no
+  hand-edit detection.
 
 Configuration (environment variables):
 
@@ -84,7 +85,7 @@ Configuration (environment variables):
 | `PICHAT_VAULT_EXPORT_ASSETS` | `_assets` | Assets subfolder name |
 | `PICHAT_EXPORT_DEBUG` | — | `1` to log skip reasons to stderr |
 
-State (last-exported entry ids, note mtimes, written note paths) lives in
+State (last-exported entry ids, written note paths) lives in
 `$PI_CODING_AGENT_DIR/state/obsidian-export.json` — never inside the vault.
 
 ## Security
