@@ -1,6 +1,6 @@
-# PiChat
+# PiChat - a pi non-coding harness for General AI chats
 
-A separate, self-contained [pi](https://pi.dev) coding harness with its own
+A separate, self-contained [pi](https://pi.dev) harness with its own
 skills, extensions, themes, and settings. It runs as a second pi instance
 alongside your normal one, sharing only credentials if you choose.
 
