@@ -14,7 +14,7 @@
     "npm:pi-context-view",
     "npm:pi-rose-pine",
     "npm:pi-open-tui"
-  ]
+  ],
   "enabledModels": [
     "anthropic/claude-fable-5",
     "anthropic/claude-opus-5",
