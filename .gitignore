@@ -1,0 +1,18 @@
+# PiChat generated / machine-local state (never commit these)
+auth.json
+sessions/
+npm/
+git/
+models-store.json
+trust.json
+tmp/
+statusline/
+open-tui.json
+
+# Project-level state if someone runs pi inside this repo
+.pi/
+
+# Logs and OS noise
+*.log
+*-debug.log
+.DS_Store

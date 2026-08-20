@@ -1,0 +1,11 @@
+{
+  "theme": "light/dark",
+  "defaultProvider": "opencode",
+  "defaultModel": "deepseek-v4-flash",
+  "defaultThinkingLevel": "high",
+  "hideThinkingBlock": true,
+  "showCacheMissNotices": true,
+  "warnings": {
+    "anthropicExtraUsage": true
+  }
+}

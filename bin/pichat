@@ -1,0 +1,40 @@
+#!/usr/bin/env sh
+# PiChat launcher — runs pi against the PiChat config directory with the
+# PiChat skill set. Everything else is forwarded to pi untouched.
+set -eu
+
+# Resolve the PiChat config directory:
+#   1. $PI_PICHAT_DIR if set (explicit override)
+#   2. $PI_CODING_AGENT_DIR if set (honor an existing override)
+#   3. default: ~/.pi/pichat
+if [ -n "${PI_PICHAT_DIR:-}" ]; then
+  PICHAT_DIR=$PI_PICHAT_DIR
+elif [ -n "${PI_CODING_AGENT_DIR:-}" ]; then
+  PICHAT_DIR=$PI_CODING_AGENT_DIR
+else
+  PICHAT_DIR=$HOME/.pi/pichat
+fi
+
+# Convenience: `pichat update` pulls the installed config and updates pi packages.
+case "${1:-}" in
+  update)
+    shift
+    if [ -d "$PICHAT_DIR/.git" ]; then
+      echo "pichat: pulling $PICHAT_DIR"
+      git -C "$PICHAT_DIR" pull --ff-only
+    else
+      echo "pichat: $PICHAT_DIR is not a git clone; update the source repo and re-run install.sh" >&2
+    fi
+    PI_CODING_AGENT_DIR="$PICHAT_DIR" exec pi update "$@"
+    ;;
+esac
+
+# Isolated skill loading: --no-skills disables all discovery (including the
+# shared ~/.agents/skills); only the explicit PiChat skills dir is loaded.
+SKILL_FLAGS=
+if [ -d "$PICHAT_DIR/skills" ]; then
+  SKILL_FLAGS="--skill $PICHAT_DIR/skills"
+fi
+
+# shellcheck disable=SC2086
+PI_CODING_AGENT_DIR="$PICHAT_DIR" exec pi --no-skills $SKILL_FLAGS "$@"
