@@ -64,7 +64,7 @@ pichat update     # git pull the installed config + pi update --all
 vault as `YYYY-MM-DD - Conversation Title.md` notes.
 
 - **Trigger:** automatic whenever a session ends (quit, `/new`, `/resume`,
-  `/fork`), plus a manual `/export "Custom Title"` command.
+  `/fork`), plus a manual `/export-obsidian "Custom Title"` command.
 - **Content:** user and assistant messages, tool calls and (truncated) results,
   compaction summaries, image attachments (copied into an `_assets` subfolder
   and embedded via `![[…]]` links). Thinking blocks are excluded.

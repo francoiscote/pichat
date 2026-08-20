@@ -712,8 +712,8 @@ export default function (pi: ExtensionAPI) {
   });
 
   // Manual export, optionally with a title override.
-  pi.registerCommand("export", {
-    description: "Export the current conversation to the Obsidian vault as a Markdown note (/export \"Title\")",
+  pi.registerCommand("export-obsidian", {
+    description: "Export the current conversation to the Obsidian vault as a Markdown note (/export-obsidian \"Title\")",
     handler: async (args, ctx) => {
       const titleOverride = args?.trim() || null;
       const result = await exportConversation(ctx.sessionManager, {
