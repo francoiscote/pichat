@@ -6,9 +6,14 @@ alongside your normal one, sharing only credentials if you choose.
 
 - Config directory: `~/.pi/pichat` (override via `PI_PICHAT_DIR`)
 - Command: `pichat` — a thin launcher that points pi at that directory
-- Skill isolation: the launcher runs `pi --no-skills --skill <dir>/skills`,
-  so PiChat's skills are the only ones loaded (your `~/.agents/skills` and
-  `~/.pi/agent/skills` are not picked up)
+- CLI parity: every argument is passed through to pi untouched, so package
+  management works the same as in regular pi (`pichat install npm:x`,
+  `pichat list`, `pichat config`, …) — but writes to PiChat's own config dir
+- Same resource discovery as pi: skills, extensions, themes, and prompts are
+  auto-discovered from the PiChat config directory, the home-level
+  `~/.agents/skills`, and project `.agents/skills` on trusted projects. Your
+  `~/.pi/agent/skills` (the other harness's agent dir) is never picked up —
+  keep PiChat-specific skills in this repo's `skills/` dir
 - Automatic export of all conversation into an Obsidian Vault as Markdown files.
 
 ## Layout
@@ -16,7 +21,7 @@ alongside your normal one, sharing only credentials if you choose.
 | Path            | Purpose                                          |
 |-----------------|--------------------------------------------------|
 | `settings.json` | pichat's pi settings (theme, models, …)          |
-| `skills/`       | skills (SKILL.md directories), loaded via --skill |
+| `skills/`       | skills (SKILL.md directories, auto-discovered)    |
 | `extensions/`   | pi extensions (auto-discovered, `*.ts`)          |
 | `themes/`       | themes (auto-discovered, `*.json`)               |
 | `prompts/`      | prompt templates (auto-discovered)               |
@@ -55,6 +60,9 @@ No credentials are ever written or copied. Without `--link-auth`, run
 ```sh
 pichat            # start the PiChat harness
 pichat -p "…"     # one-shot, as with pi
+pichat install npm:whatever   # install a package (same CLI as pi)
+pichat list       # list installed packages
+pichat config     # package/settings TUI (Tab switches scope)
 pichat update     # git pull the installed config + pi update --all
 ```
 
@@ -90,7 +98,10 @@ State (last-exported entry ids, written note paths) lives in
 
 ## Security
 
-The launcher's skill/extension/theme loading is exactly what is shipped in
-this repo. Skills can instruct the model to run arbitrary commands and
-extensions run as your user — review anything new before committing it.
-Never commit `auth.json` or any credential to this repository.
+Resources (skills, extensions, themes, prompts) are loaded from the same
+discovery paths as regular pi: the PiChat config directory (what is shipped
+in this repo plus anything you `pichat install` into it), the home-level
+`~/.agents/skills`, and project `.agents/skills` on trusted projects. Skills
+can instruct the model to run arbitrary commands and extensions run as your
+user — review anything new before installing or committing it. Never commit
+`auth.json` or any credential to this repository.

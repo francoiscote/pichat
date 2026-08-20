@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
-# PiChat launcher — runs pi against the PiChat config directory with the
-# PiChat skill set. Everything else is forwarded to pi untouched.
+# PiChat launcher — runs pi against the PiChat config directory. All arguments
+# are passed through to pi untouched, so the CLI is identical to pi
+# (install/remove/list/config/auth/update … all work the same). The agent dir
+# is what separates the two harnesses.
 set -eu
 
 # Resolve the PiChat config directory:
@@ -29,12 +31,9 @@ case "${1:-}" in
     ;;
 esac
 
-# Isolated skill loading: --no-skills disables all discovery (including the
-# shared ~/.agents/skills); only the explicit PiChat skills dir is loaded.
-SKILL_FLAGS=
-if [ -d "$PICHAT_DIR/skills" ]; then
-  SKILL_FLAGS="--skill $PICHAT_DIR/skills"
-fi
-
-# shellcheck disable=SC2086
-PI_CODING_AGENT_DIR="$PICHAT_DIR" exec pi --no-skills $SKILL_FLAGS "$@"
+# Resources are discovered exactly like in regular pi: the PiChat config dir
+# ($PICHAT_DIR), the home-level ~/.agents/skills, and project .agents dirs
+# when trusted. Your other harness's agent dir (~/.pi/agent) is separate and
+# never touched. Because we never prepend flags, pi's first argument is never
+# altered and package commands dispatch exactly like with pi itself.
+PI_CODING_AGENT_DIR="$PICHAT_DIR" exec pi "$@"
